@@ -9,6 +9,7 @@ const dotenv = require('dotenv');
 const connectDB = require('./config/database');
 const indexRoutes = require('./routes/index');
 const authRoutes = require('./routes/auth');
+const dashboardRoutes = require('./routes/dashboard');
 
 // Load config
 dotenv.config({ path: './.env' });
@@ -48,6 +49,7 @@ app.use(function (req, res, next) {
 // Routes
 app.use('/', indexRoutes);
 app.use('/auth', authRoutes);
+app.use('/dashboard', dashboardRoutes);
 
 app.listen(process.env.PORT, () => {
     console.log(`Server is running on port ${process.env.PORT}`);
