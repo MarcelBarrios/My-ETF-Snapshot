@@ -3,7 +3,8 @@ const router = express.Router();
 const dashboardController = require('../controllers/dashboardController');
 const { ensureAuth } = require('../middleware/auth');
 
-
 router.get('/', ensureAuth, dashboardController.getDashboard);
+router.post('/addEtf', ensureAuth, dashboardController.addEtf);
+router.get('/delete/:id', ensureAuth, dashboardController.deleteEtf); // use GET for simplicity with links
 
 module.exports = router;

@@ -3,32 +3,81 @@
     <div class="container">
         <div class="mb-4">
             <h1 class="display-5">Welcome, <%= user.userName %>!</h1>
-            <p class="lead">This is your personal dashboard. Soon you'll be able to add and track your favorite ETFs
-                right here.</p>
+            <p class="lead">Add ETF symbols like 'VT' or 'VOO' to start tracking.</p>
         </div>
 
-        <div class="row">
-            <div class="col-md-8">
-                <div class="card">
-                    <div class="card-header">
-                        Your Tracked ETFs
-                    </div>
-                    <div class="card-body">
-                        <p class="card-text">Your list of ETFs will appear here.</p>
-                    </div>
-                </div>
+        <% if (messages.error && messages.error.length> 0) { %>
+            <div class="alert alert-danger">
+                <%= messages.error[0] %>
             </div>
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-header">
-                        Add a New ETF
+            <% } %>
+                <% if (messages.info && messages.info.length> 0) { %>
+                    <div class="alert alert-success">
+                        <%= messages.info[0] %>
                     </div>
-                    <div class="card-body">
-                        <p>Form coming soon!</p>
-                    </div>
-                </div>
-            </div>
-        </div>
+                    <% } %>
+
+                        <div class="row">
+                            <div class="col-md-4 mb-4">
+                                <div class="card">
+                                    <div class="card-header">
+                                        Add a New ETF
+                                    </div>
+                                    <div class="card-body">
+                                        <form action="/dashboard/addEtf" method="POST">
+                                            <div class="mb-3">
+                                                <label for="symbol" class="form-label">ETF Symbol</label>
+                                                <input type="text" class="form-control" id="symbol" name="symbol"
+                                                    required>
+                                            </div>
+                                            <button type="submit" class="btn btn-primary w-100">Add ETF</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-8">
+                                <div class="card">
+                                    <div class="card-header">
+                                        Your Tracked ETFs
+                                    </div>
+                                    <% if (etfs.length> 0) { %>
+                                        <ul class="list-group list-group-flush">
+                                            <% etfs.forEach(etf=> { %>
+                                                <li
+                                                    class="list-group-item d-flex justify-content-between align-items-center">
+                                                    <div>
+                                                        <h5 class="mb-1">
+                                                            <%= etf.symbol %>
+                                                        </h5>
+                                                        <% if (etf.quote) { %>
+                                                            <p class="mb-1">
+                                                                <strong>$<%= etf.quote.price %></strong>
+                                                                <span
+                                                                    class="ms-2 <%= etf.quote.change >= 0 ? 'text-success' : 'text-danger' %>">
+                                                                    <%= etf.quote.change>= 0 ? '+' : '' %><%=
+                                                                            etf.quote.change %> (<%=
+                                                                                etf.quote.changePercent %>%)
+                                                                </span>
+                                                            </p>
+                                                            <% } else { %>
+                                                                <p class="mb-1 text-muted">Could not fetch quote.</p>
+                                                                <% } %>
+                                                    </div>
+                                                    <a href="/dashboard/delete/<%= etf._id %>"
+                                                        class="btn btn-sm btn-danger">Remove</a>
+                                                </li>
+                                                <% }); %>
+                                        </ul>
+                                        <% } else { %>
+                                            <div class="card-body">
+                                                <p class="card-text">Your list of tracked ETFs is empty. Add one to get
+                                                    started!</p>
+                                            </div>
+                                            <% } %>
+                                </div>
+                            </div>
+                        </div>
     </div>
 
     <%- include('partials/footer') %>
